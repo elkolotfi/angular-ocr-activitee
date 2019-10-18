@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Post} from '../../model/Post';
+import {Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,26 @@ export class PostService {
       'Sed vel nulla tortor. Pellentesque faucibus, nisi in feugiat lobortis, lacus enim pretium ipsum, sed mattis magna lorem in erat.',
       0)
   ];
+  postSubject = new Subject<Post[]>();
 
   constructor() { }
+
+  addPost(post: Post) {
+    this.posts.push(post);
+    this.emitPost();
+  }
+
+  removePost(post: Post) {
+    const removeIndex = this.posts.findIndex((postDel) => {
+      if (postDel === post) {
+        return true;
+      }
+    });
+    this.posts.splice(removeIndex, 1);
+    this.emitPost();
+  }
+
+  emitPost() {
+    this.postSubject.next(this.posts);
+  }
 }
