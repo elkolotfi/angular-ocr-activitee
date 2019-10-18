@@ -5,7 +5,7 @@ import {PostListComponent} from './post-list/post-list.component';
 import {NewPostComponent} from './new-post/new-post.component';
 
 const routes: Route[] = [
-  { path: 'posts/new', component: NewPostComponent },
+  { path: 'new', component: NewPostComponent },
   { path: 'posts', component: PostListComponent },
   { path: '', redirectTo: 'posts', pathMatch: 'full' },
   { path: '**', redirectTo: 'posts', pathMatch: 'full' }
