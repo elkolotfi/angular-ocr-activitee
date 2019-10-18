@@ -46,6 +46,22 @@ export class PostService {
     this.emitPost();
   }
 
+  loveIt(post: Post) {
+    const postIndex = this.posts.findIndex((findPost: Post) => {
+      if (post === findPost) { return true; }
+    });
+    this.posts[postIndex].loveIt++;
+    this.emitPost();
+  }
+
+  dontLoveIt(post: Post) {
+      const postIndex = this.posts.findIndex((findPost: Post) => {
+        if (post === findPost) { return true; }
+      });
+      this.posts[postIndex].loveIt--;
+      this.emitPost();
+  }
+
   emitPost() {
     this.postSubject.next(this.posts);
   }

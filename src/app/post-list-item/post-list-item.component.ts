@@ -17,14 +17,16 @@ export class PostListItemComponent implements OnInit {
   }
 
   onDelete() {
-    this.postService.removePost(this.post);
+    if (confirm('Vous êtes sur de bien vouloir supprimer ce post?')) {
+      this.postService.removePost(this.post);
+    }
   }
 
   onLoveIt() {
-    this.post.loveIt += 1;
+    this.postService.loveIt(this.post);
   }
 
   onDontLoveIt() {
-    this.post.loveIt -= 1;
+    this.postService.dontLoveIt(this.post);
   }
 }
