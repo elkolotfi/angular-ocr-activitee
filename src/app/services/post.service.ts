@@ -3,6 +3,7 @@ import {Post} from '../../model/Post';
 import {Subject} from 'rxjs';
 import * as firebase from 'firebase';
 import DataSnapshot = firebase.database.DataSnapshot;
+import {isNumber} from 'util';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,8 @@ export class PostService {
     this.savePosts();
   }
 
-  removePost(post: Post) {
-    const removeIndex = this.posts.findIndex((postDel) => {
+  removePost(post: Post | number) {
+    const removeIndex: number = isNumber(post) ? +post : this.posts.findIndex((postDel) => {
       if (postDel === post) {
         return true;
       }

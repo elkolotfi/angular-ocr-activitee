@@ -10,6 +10,7 @@ import {PostService} from '../services/post.service';
 export class PostListItemComponent implements OnInit {
 
   @Input() post: Post;
+  @Input() index: number;
 
   constructor(private postService: PostService) { }
 
@@ -18,7 +19,7 @@ export class PostListItemComponent implements OnInit {
 
   onDelete() {
     if (confirm('Vous êtes sur de bien vouloir supprimer ce post?')) {
-      this.postService.removePost(this.post);
+      this.postService.removePost(this.index);
     }
   }
 
