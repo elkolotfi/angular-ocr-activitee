@@ -1,39 +1,23 @@
 import {Injectable} from '@angular/core';
 import {Post} from '../../model/Post';
 import {Subject} from 'rxjs';
+import * as firebase from 'firebase';
+import DataSnapshot = firebase.database.DataSnapshot;
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
-  posts = [
-    new Post('Mon premier post',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
-      'Vestibulum et ligula quam. Nullam ultrices volutpat iaculis. ' +
-      'Vestibulum ut tortor a lectus dignissim auctor in eget lectus.',
-      5),
-    new Post('Mon deuxième post',
-      'Mauris pulvinar, quam quis gravida elementum, urna libero semper libero, et tristique massa felis ac ipsum. ' +
-      'Morbi nec dolor sagittis, bibendum odio ut, suscipit mauris. ' +
-      'Ut facilisis velit id justo consequat eleifend. ' +
-      'Nullam placerat, quam id rhoncus varius, dolor massa placerat nisl, id viverra mauris sem ac nisi. ' +
-      'Vivamus sollicitudin dictum congue. Integer dolor leo, viverra ac gravida aliquet, hendrerit eget velit. ' +
-      'Curabitur eu risus vulputate, blandit libero et, sagittis sem. ' +
-      'Nunc ullamcorper mi eget neque tempor, venenatis pulvinar libero pellentesque. ' +
-      'In placerat luctus faucibus.',
-      -4),
-    new Post('Encore un post',
-      'Nunc non tempor nibh. Pellentesque facilisis efficitur dui, sit amet pharetra quam pharetra at. ' +
-      'Sed vel nulla tortor. Pellentesque faucibus, nisi in feugiat lobortis, lacus enim pretium ipsum, sed mattis magna lorem in erat.',
-      0)
-  ];
+  posts: Post[] = [];
   postSubject = new Subject<Post[]>();
 
-  constructor() { }
+  constructor() {
+    this.getPosts();
+  }
 
   addPost(post: Post) {
     this.posts.push(post);
-    this.emitPost();
+    this.savePosts();
   }
 
   removePost(post: Post) {
@@ -43,15 +27,16 @@ export class PostService {
       }
     });
     this.posts.splice(removeIndex, 1);
-    this.emitPost();
+    this.savePosts();
   }
 
   loveIt(post: Post) {
     const postIndex = this.posts.findIndex((findPost: Post) => {
       if (post === findPost) { return true; }
     });
+
     this.posts[postIndex].loveIt++;
-    this.emitPost();
+    this.savePosts();
   }
 
   dontLoveIt(post: Post) {
@@ -59,7 +44,24 @@ export class PostService {
         if (post === findPost) { return true; }
       });
       this.posts[postIndex].loveIt--;
+      this.savePosts();
+  }
+
+  savePosts() {
+    firebase.database().ref('posts').set(this.posts).then(() => this.emitPost());
+  }
+
+  private getPosts() {
+    firebase.database().ref('posts').on('value', (data: DataSnapshot) => {
+      this.posts = [];
+      // Format firebase returned objects to Post instances
+      if (data.val()) {
+        data.val().forEach(p => {
+          this.posts.push(Post.format(p));
+        });
+      }
       this.emitPost();
+    });
   }
 
   emitPost() {
