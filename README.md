@@ -22,3 +22,8 @@ Une fois toutes les dépendances installées, lancez le serveur avec:
 `ng serve`
 
 C'est tout bon! Vous pouvez commencer à utiliser l'application depuis l'url [localhost:4200](http://localhost:4200)
+
+## Base de données
+
+Afin de stoquer les données de l'application (la liste des posts) j'utilise une base de données firebase qui est publique. Merci de faire attention à ce que vous allez poster dessus car tout contenue rajouté sera visible par n'importe quel autre utilisateur de l'application.
+Merci pour votre compréhension :)
